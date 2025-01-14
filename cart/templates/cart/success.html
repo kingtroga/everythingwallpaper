@@ -1,0 +1,12 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Thank You!{% endblock %} 
+{% block content %}
+    <div class="max-w-6xl mx-auto flex flex-wrap items-start  py-10 md:py-6 px-6 xl:px-0 lg:mb-[-20rem]">
+        <img src="{% static 'images/shopping-cart.png' %}" alt="no {{ active_category }} avaliable image" class=" w-full md:w-2/4"/>
+            <div class="text-white w-full md:w-2/4">
+                <h2 class="text-3xl font-semibold text-center md:text-left">Your Order has been placed Successfully</h2>
+                <p class="text-center md:text-left">A email you can use to track your order will be sent to you shortly</p>
+            </div>
+    </div>
+{% endblock %}

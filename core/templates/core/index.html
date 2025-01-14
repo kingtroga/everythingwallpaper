@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Welcome{% endblock %} 
+{% block content %}
+{% if products %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-10 px-10 lg:px-20 w-full  pt-10 mb-[0rem] ">
+            {% for product in products %}
+            <a href="{% url 'product_item' product.id %}">
+                <div class="w-4/5 md:w-4/5 lg:w-full mx-auto  pt-10 lg:pt-5 mb-[9rem]">
+            
+                    <div>
+                        <!--Product Image(s)-->
+                        {% with first_image=product.images.all|first %}
+                            <img src="{{ first_image.image.url }}"  class="rounded-t-xl w-full">
+                        {% endwith %}
+                    </div>
+        
+                    <div class="p-6 bg-white w-full rounded-b-xl">
+                        <!--Product Name-->
+                        <h2 class="text-2xl danfo-bus poppins-semibold uppercase">{{ product.name }}</h2>
+                        <!--Product Price-->
+                        <p class="text-gray-500 text-sm">Price: ₦{{ product.price }}</p>
+                        <!--Product Color(s)-->
+                        <!-- <p class="text-gray-500 text-sm">Also comes in: {{ product.colors }}</p> -->
+                        <!--Product Size-->
+                        <p class="text-gray-500 text-sm">Size: {{ product.size }}</p>
+                        <!--Product Code-->
+                        <p class="text-gray-500 text-sm">Code: {{ product.product_code }}</p>
+        
+                    </div>
+            
+                </div>
+
+            </a>
+            {% endfor %}
+    </div> 
+    <div class="text-white flex space-x-4 font-semibold justify-center text-sm md:text-lg md:mb-[-10rem] py-4">
+        {% if products.has_previous %}
+            <a href="?page=1" class="hover:text-gray-100 bg-black py-2 px-4 rounded-full hover:bg-gray-700">&laquo; First</a>
+            <a href="?page={{ products.previous_page_number }}" class=" py-2 px-4 hover:text-gray-100 bg-black rounded-full hover:bg-gray-700" >Previous</a>
+        {% endif %}
+        <p class="bg-black rounded-full py-2 px-4">Page {{ products.number }} of {{ products.paginator.num_pages }}</p>
+        {% if products.has_next %}
+            <a href="?page={{ products.next_page_number }}" class="bg-black py-2 px-4 rounded-full hover:text-gray-100 hover:bg-gray-700">Next</a>
+            <a href="?page={{ products.paginator.num_pages }}" class="bg-black py-2 px-4 rounded-full hover:text-gray-100 hover:bg-gray-700">Last &raquo;</a>
+        {% endif %}
+    </div>
+{% else %}
+    <div class="bg-black md:bg-transparent max-w-6xl mx-auto flex flex-wrap justify-center py-10 md:py-6 px-6 xl:px-0">
+        <img src="{% static 'images/open-empty-box.png' %}" alt="no {{ active_category }} avaliable image" class=" w-full md:w-2/4"/>
+        <div class="text-white w-full md:w-2/4">
+            <h2 class="text-3xl font-semibold text-center md:text-left">Out of Stock</h2>
+            <p class="text-center md:text-left">Sorry, we do not have any {% if active_category %}{{ active_category }}{% else %} Products {% endif %} in stock at the moment. Please check back later 😊</p>
+        </div>
+    </div>
+{% endif %}  
+{% endblock %}

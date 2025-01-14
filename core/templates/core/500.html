@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}500 Error{% endblock %} 
+{% block content %}
+<div class="bg-black md:bg-transparent max-w-6xl mx-auto flex flex-wrap justify-center py-6 px-6 xl:px-0 mb-[-10rem]">
+    <div class="poppins-semibold text-white text-[6rem] text-center ">
+        <p>500</p>
+        <p>ERROR</p>
+    </div>
+    <div class="text-white w-full md:w-2/4">
+        <h2 class="text-3xl font-semibold text-center md:text-left">Server Error</h2>
+        <p class="text-center md:text-left">Sorry, this is an error from our end please report this error to our support team on any contact platform. Thank you.</p>
+    </div>
+</div>
+{% endblock %}

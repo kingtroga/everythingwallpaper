@@ -1,0 +1,347 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="{% static 'js/tailwind.js' %}"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Danfo&family=LXGW+WenKai+TC&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <title>{% block title %}{% endblock %} | EverythingWallpaperInterior </title>
+
+    <style>
+        :root {
+            --tw-shadow-color: black;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap');
+    
+        .font-arial {
+        font-family: 'Arial', sans-serif;
+        }
+
+        .dancing-script{
+        font-family: "Dancing Script", cursive;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        }
+
+        .danfo-bus {
+        font-family: "Danfo", serif;
+        font-optical-sizing: auto;
+        font-weight: 400;
+        font-style: normal;
+        font-variation-settings:
+            "ELSH" 0;
+        }
+
+        .lxgw-wenkai-tc-regular {
+        font-family: "LXGW WenKai TC", cursive;
+        font-weight: 400;
+        font-style: normal;
+        }
+
+        
+        .poppins-semibold {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-style: normal;
+        }
+
+        @layer utilities {
+        .font-arial {
+            font-family: Arial, sans-serif;
+        }
+        }
+
+        .background-image {
+            z-index: -1;
+            position: relative;
+        }
+
+        .text-shadow-sm {
+            text-shadow: 0 1px 2px var(--tw-shadow-color);
+        }
+        .text-shadow {
+            text-shadow: 0 2px 4px var(--tw-shadow-color);
+        }
+        .text-shadow-lg {
+            text-shadow: 0 8px 16px var(--tw-shadow-color);
+        }
+        .slide[data-active] {
+            opacity: 1;
+        }
+
+        .active {
+            display: block;
+        }
+
+
+    </style>
+</head>
+<body class="bg-black">
+
+    <a href="{% url 'index' %}">
+        <h1 class="poppins-semibold text-white text-center uppercase text-lg md:text-5xl hidden md:block z-10 pb-2">
+            Everything Wallpaper Interior
+        </h1>
+    </a>
+    
+  
+    
+
+    <nav class="block  z-10">
+    
+    <ul class=" hidden w-4/5 mx-auto text-sm font-medium text-center text-gray-500 rounded-lg z-10 shadow hidden md:block md:flex  dark:divide-gray-700 dark:text-white">
+        {% for category in categories %}
+        <li class="w-full focus-within:z-10">
+            <a href="{% url 'index' %}?category={{ category.slug }}" class="inline-block w-full p-4   border-r  border-gray-700  hover:bg-gray-700 {% if forloop.counter > 1 %}rounded-s-0{% else %}rounded-s-lg{% endif %} focus:ring-2 focus:ring-white active focus:outline-none {% if category.slug == active_category %} border-2 border-white {% endif %} bg-gray-800 text-white" aria-current="page">{{ category.name }}</a>
+        </li>
+        {% endfor %}
+
+        <li class="w-full focus-within:z-10">
+            <a href="{% url 'cart' %}" id="menu-cart-button" class="inline-block w-full p-4   border-r  border-gray-700 border-s-0  hover:bg-gray-700  focus:ring-2 focus:ring-white active focus:outline-none bg-gray-800 text-white rounded-e-lg">
+                {% include 'cart/menu_cart.html' %}  
+            </a>
+        </li>
+    </ul>
+
+    
+        <div class="{% if request.resolver_match.url_name == 'index' %}md:block hidden{% else %}hidden{% endif %} flex justify-center w-full mt-4">
+            <form method="get" action="." class="flex justify-center">
+                {% csrf_token %}
+                <div class="flex w-3/5 rounded-xl ring-2 ring-offset-4 drop-shadow-2xl">
+                    <input type="text" placeholder="Search..." name="query" class="rounded-l-xl border-0 w-full outline-none px-4 py-2 focus:border-0 active:border-0 ">
+                    <button class="px-4 py-2 bg-gray-100 border-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
+    <div class="md:hidden fixed w-full bg-black max-w-screen-xl z-30 flex flex-wrap justify-between mx-auto p-4">
+    <a href="{% url 'index' %}" class="flex items-center space-x-3 rtl:space-x-reverse">
+        <h1 class="poppins-semibold uppercase  text-white text-center text-sm sm:text-lg md:text-5xl">Everything Wallpaper Interior</h1>
+    </a>
+    <button data-collapse-toggle="navbar-hamburger" type="button" class="inline-flex items-center justify-center p-2 w-10 h-10 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-hamburger" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+    
+    </div>
+    </nav>
+    <div class="block md:hidden w-4/5 mx-auto pt-[5rem] z-[2]" id="navbar-hamburger">
+        <div class="w-full {% if request.resolver_match.url_name == 'index' %}block{% else %}hidden{% endif %}">
+            <form method="get" action="." class="flex justify-center w-full">
+                {% csrf_token %}
+                <div class="flex w-3/5 rounded-xl ring-2 ring-offset-4 w-full drop-shadow-2xl">
+                    <input type="text" placeholder="Search..." name="query" class="rounded-l-xl border-0 w-full outline-none px-4 py-2 focus:border-0 active:border-0 ">
+                    <button class="px-4 py-2  bg-gray-100 border-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <ul class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+            {% for category in categories %}
+            <li>
+                <a href="{% url 'index' %}?category={{ category.slug }}" class="block py-2 px-3 text-gray-400 focus:text-white {% if category.slug == active_category %} border-2 border-white {% endif %} bg-gray-800 rounded hover:bg-gray-700 focus:ring-2 focus:ring-white bg-gray-800" aria-current="page">{{ category.name }}</a>
+            </li>
+            {% endfor %}  
+            <li>
+                <a href="{% url 'cart' %}" class="block py-2 px-3 rounded   text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white">
+                    {% include 'cart/menu_cart.html' %}
+                </a>
+            </li>
+        </ul>
+    </div>
+  
+
+    <img src="{% static 'images/logoB.png' %}" class="background-image fixed top-16 md:top-1" alt="Everything Wallpaper Interior Logo 2">
+
+
+    {% block content %}
+
+    {% endblock %}
+
+    <footer class="mt-8 sm:mt-[20rem] md:mt-[10rem] lg:mt-[20rem] w-full text-gray-400 flex lg:flex-col ">
+        <div class="w-full lg:w-[62rem]  bg-gray-800 lg:mx-auto mr-5 ml-5 py-4 rounded lg:grid lg:grid-cols-4 lg:gap-2 mx-auto">
+            <div class="ml-3 focus:text-white hover:text-white mb-2 lg:mb-0">
+                <h2 class="poppins-semibold text-lg">About</h2>
+                <p class="text-sm">Lorem ipsum dolor sit amet consectetur adipiscing elit, penatibus elementum imperdiet tempor condimentum arcu varius, tempus quam nulla at lectus nullam. Egestas per tellus tristique commodo montes eu, taciti faucibus a placerat. Maecenas magna placerat sollicitudin posuere curae netus mauris dis quam, laoreet nascetur mattis turpis porta congue nunc condimentum facilisi, ligula conubia interdum fringilla facilisis tempus proin inceptos.</p>
+                <div class="text-2xl flex flex-row space-x-2">
+                    <span>
+                      <i class="fa-brands cursor-pointer hover:bg-mustard fa-twitter py-3 px-3 rounded-full text-gray-300 bg-[#343a40]"></i>
+                    </span>
+                    <span>
+                      <i class="fa-brands  cursor-pointer hover:bg-mustard  fa-facebook-f py-3 px-4 rounded-full text-gray-300  bg-[#343a40]"></i>
+                    </span>
+                    <span> 
+                      <i class="fa-brands  cursor-pointer  hover:bg-mustard fa-instagram py-3 px-3 rounded-full text-gray-300  bg-[#343a40]"></i>
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="ml-3 focus:text-white hover:text-white  mb-2 lg:mb-0 ">
+                <h2 class="poppins-semibold text-lg">FAQ</h2>
+                <ul class="text-sm">
+                    <li class="flex gap-1">
+                        <span>&#129300;</span>
+                        <p>
+                        How many wallpapers do I need for my wall?</br>
+                        It depends on the size of your wall. Typically for 300feet wall you would need three 3feet by 3feet wallpapers.</p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#129300;</span>
+                        <p>Do you deliver worldwide?</br>
+                         Yes, we even have &#128073; testimonials &#128072;.</p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#129300;</span>
+                        <p>What is your most affordable Interior Decor?</br>
+                        That would be our Chinese wallpapers.</p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#129300;</span>
+                        <p>Do you offer Installation services also?</br>
+                        Yes, we do.</p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#129300;</span>
+                        <p>When are you opening and closing times?</br>
+                        We are open bought online and in-store, Mondays to Saturdays, 9am to 6pm.</p>
+                    </li>
+                </ul>
+
+            </div> 
+            <div class="ml-3 focus:text-white hover:text-white  mb-2 lg:mb-0 ">
+                <h2 class="poppins-semibold text-lg">Contact</h2>
+                <ul class="text-sm">
+                    <li class="flex gap-1">
+                        <span>&#128222;</span>
+                        <a href="tel:+2348058233394" class="hover:underline hover:underline-offset-2">
+                        Call Us @:</br>
+                        +2348058233394</a>
+                    </li>
+
+                    <li class="flex gap-1">
+                        <span>&#128231;</span>
+                        <a href="mailto:everythingwallpaperinterior@gmail.com"  class="hover:underline hover:underline-offset-2">
+                        Email Us @:</br>
+                        everythingwallpaperinterior@gmail.com</a>
+                    </li>
+
+                    <li class="flex gap-1">
+                        <span>&#128205;</span>
+                        <p>
+                        Abuja</br>
+                        34D Efab mall garki, Area 11, Abuja State, Nigeria.</p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#128205;</span>
+                        <p>Lagos:</br>
+                            22 Dupe oguntade street illasan, Lekki, Lagos State, Nigeria.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="ml-3 focus:text-white hover:text-white  mb-2 lg:mb-0">
+                <h3 class="poppins-semibold text-lg">Testimonials</h3>
+                <ul class="text-sm">
+                    <li class="flex gap-1">
+                        <span>&#128522;</span>
+                        <p>
+                        How many wallpapers do I need for my wall?</br>
+                        - Temi Obafemi</br>
+                        &#128205;Lagos, Nigeria
+
+                    </p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#128522;</span>
+                        <p>Do you deliver worldwide?</br>
+                         - Ponmo Coconut</br>
+                         &#128205;Accra, Ghana
+                        </p>
+                    </li>
+                    <li class="flex gap-1">
+                        <span>&#128522;</span>
+                        <p>What is your most affordable Interior Decor?</br>
+                        - Bara Yekorogha.</br>
+                        &#128205;Bayelsa, Nigeria</p>
+                    </li>
+
+                </ul>
+
+            </div>
+            <div class="text-sm m-3 sm:m-5 col-span-4 hover:text-white">
+                <h3 class=text-center>Copyright &#169; 2024. Built with Hope by <a class="dancing-script uppercase hover:underline hover:underline-offset-2 " href="https://www.instagram.com/atari.can/">Atary</a></h3>
+            </div>
+
+        </div>
+        
+        
+
+    </footer>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                screens: {
+                    'surf': '912px',
+                    'softd': '540px',
+                    'fourq:mb-[50rem] asusd': '853px',
+                    'sm': '640px',
+                    'fourq': '2560px',
+                    // => @media (min-width: 640px) { ... }
+
+                    'md': '768px',
+                    // => @media (min-width: 768px) { ... }
+
+                    'lg': '1024px',
+                    // => @media (min-width: 1024px) { ... }
+
+                    'xl': '1280px',
+                    // => @media (min-width: 1280px) { ... }
+
+                    '2xl': '1536px',
+
+                    '3xl': '2560px'
+                },
+            },
+        };
+        document.addEventListener("DOMContentLoaded", function() {
+            const button = document.querySelector('[data-collapse-toggle="navbar-hamburger"]');
+            const navMenu = document.getElementById("navbar-hamburger");
+        
+            button.addEventListener("click", function() {
+                if (navMenu.classList.contains("hidden")) {
+                    navMenu.classList.remove("hidden");
+                } else {
+                    navMenu.classList.add("hidden");
+                }
+            });
+        });
+        
+
+        
+    </script>
+    <script src="https://unpkg.com/htmx.org@1.7.0"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>
+
+

@@ -1,0 +1,256 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Checkout{% endblock %} 
+{% block content %}
+    <div class="max-w-6xl mx-auto flex flex-wrap items-start py-6 px-6 xl:px-0">
+            <div class="products  mb-2 lg:mb-0  px-3 py-2 w-full lg:w-3/4">
+                <h1 class="mb-5 text-3xl text-white text-2xl text-semibold">
+                    Checkout
+                </h1>
+                    <div class="w-full pr-6">
+                        <div class="mb-6 p-6 bg-red-100 rounded-xl  hidden" id="errors">
+                        </div>
+                        <div class="mb-6 p-6 bg-gray-100 rounded-xl">
+                            <h2 class="mb-5 uppercase text-lg">
+                                Shipping Information
+                            </h2>
+                            <div class="flex space-x-6">
+                                <div class="w-1/2 mb-4">
+                                    <label class="inline-block mb-2">First name</label>
+                                    <input type="text" name="first_name" class="w-full p-5 rounded-xl">
+                                </div>
+                                <div class="w-1/2 mb-4">
+                                    <label class="inline-block mb-2">Last name</label>
+                                    <input type="text" name="last_name" class="w-full p-5 rounded-xl">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="inline-block mb-2">Address</label>
+                                <input type="text" name="address" class="w-full p-5 rounded-xl">
+                            </div>
+                            <div class="flex space-x-6">
+                                <div class="w-1/2 mb-4">
+                                    <label class="inline-block mb-2">Zipcode</label>
+                                    <input type="text" name="zipcode" class="w-full p-5 rounded-xl">
+                                </div>
+                                <div class="w-1/2 mb-4">
+                                    <label class="inline-block mb-2">City/Place</label>
+                                    <input type="text" name="place" class="w-full p-5 rounded-xl">
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="mb-6 p-6 bg-gray-100 rounded-xl">
+                            <h2 class="mb-5 uppercase text-lg">
+                                Contact Information
+                            </h2>
+
+                            <div class="mb-4">
+                                <label class="inline-block mb-2">Email</label>
+                                <input type="text" name="email" class="w-full p-5 rounded-xl">
+                            </div>
+                            <div class="mb-4">
+                                <label class="inline-block mb-2">Phone</label>
+                                <input type="phone" name="phone" class="w-full p-5 rounded-xl">
+                            </div>
+                        </div>
+                        
+                    </div>
+            </div>
+            <div class="summary w-full lg:w-1/4 p-6 bg-gray-100 rounded-xl">
+                <h2 class="uppercase text-lg mb-5">
+                    Summary
+                </h2>
+                <div class="mb-6 flex justify-between">
+                    <span class="font-semibold">Total</span>
+                    <span>₦{{ total_price_of_items }}</span>
+                </div>
+
+                <div class="flex flex-col gap-y-0.5">
+                    <button 
+                    onclick="buy(event)"
+                    class="inline-block px-8 hidden py-4 rounded-xl bg-gray-700 hover:bg-gray-400 text-white"
+                    >
+                    Confirm checkout with Stripe
+                    </button>
+                    <button 
+                    onclick="buy_paystack(event)"
+                    class="inline-block px-8 py-4 rounded-xl bg-gray-700 hover:bg-gray-400 text-white"
+                    >
+                    Confirm checkout with Paystack
+                    </button>
+                </div>
+            </div>  
+    </div>
+{% endblock %}
+{% block scripts %}
+<script type="application/javascript" src="https://js.stripe.com/v3/"></script>
+<script type="application/javascript" src="https://js.paystack.co/v2/inline.js"></script>
+<script>
+    let el = document.getElementById('errors')
+
+    function validateForm(data) {
+
+        let errors = []
+
+        if (data.first_name === '') {
+            errors.push('First name is empty')
+        }
+
+        if (data.last_name === '') {
+            errors.push('Last name is empty')
+        }
+
+        if (data.email === '') {
+            errors.push('Email is empty')
+        }
+
+        if (data.phone === '') {
+            errors.push('Phone is empty')
+        }
+
+        if (data.address === '') {
+            errors.push('Address is empty')
+        }
+
+        if (data.place === '') {
+            errors.push('Place is empty')
+        }
+
+        if (data.zipcode === '') {
+            errors.push('Zipcode is empty')
+        }
+
+        if (errors.length > 0) {
+            let html = '<ul>';
+                
+            errors.forEach((error) => {
+                html += '<li>' + error + '</li>';
+            })
+
+            el.innerHTML = html + '</ul>';
+            el.classList.add('block');
+            el.classList.remove('hidden');
+            
+
+        } else {
+            el.innerHTML = '';
+            el.classList.add('hidden');
+        }
+
+        return errors
+
+    }
+
+    function buy(event) {
+        event.preventDefault()
+
+        let data = {
+            'first_name': document.querySelector('input[name=first_name]').value,
+            'last_name': document.querySelector('input[name=last_name]').value,
+            'email': document.querySelector('input[name=email]').value,
+            'address': document.querySelector('input[name=address]').value,
+            'phone': document.querySelector('input[name=phone]').value,
+            'zipcode': document.querySelector('input[name=zipcode]').value,
+            'place': document.querySelector('input[name=place]').value,
+        }
+
+        let errors = validateForm(data)
+
+        if (errors.length) {
+            console.log('Errors', errors)
+        } else {
+            var stripe = Stripe('{{ pub_key_stripe }}')
+
+            fetch('/order/start_order/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(data)
+            })
+            .then(function(response) {
+                return response.json()
+            })
+            .then(function(session) {
+                return stripe.redirectToCheckout({ sessionId: session.session.id })
+            })
+            .then(function(result) {
+                if (result.error){
+                    alert(result.error.message)
+                }
+            })
+            .catch(function(error){
+                console.log('Errors', error)
+            })
+        }
+        
+
+        return false
+    }
+
+    function buy_paystack(event) {
+        event.preventDefault();
+
+        let data = {
+            'first_name': document.querySelector('input[name=first_name]').value,
+            'last_name': document.querySelector('input[name=last_name]').value,
+            'email': document.querySelector('input[name=email]').value,
+            'address': document.querySelector('input[name=address]').value,
+            'phone': document.querySelector('input[name=phone]').value,
+            'zipcode': document.querySelector('input[name=zipcode]').value,
+            'place': document.querySelector('input[name=place]').value,
+        };
+
+        let errors = validateForm(data);
+
+        if (errors.length) {
+            console.log('Errors', errors);
+        } else {
+            const paystack = new PaystackPop();
+
+            paystack.newTransaction({
+                key: "{{ pub_key_paystack }}", 
+                email: data.email,
+                amount: parseInt("{{ total_price_of_items }}") * 100, // Amount in kobo (multiply by 100)
+                onSuccess: (transaction) => {
+                    if (transaction.status === 'success') {
+                        fetch(`/order/verify_and_save_order/${transaction.reference}/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            credentials: 'same-origin',
+                            body: JSON.stringify(data)
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(result) {
+                            if (result.status === 'success') {
+                                alert('Order placed successfully!');
+                                window.location.href = '/cart/success/'; // Redirect to success page
+                            } else {
+                                alert('Payment verification failed. Please contact support.');
+                            }
+                        })
+                        .catch(function(error) {
+                            console.error('Error:', error);
+                            alert('An error occurred while verifying payment.');
+                        });
+                    }
+                },
+
+                onCancel: () => {
+                    alert('Transaction canceled.');
+                }
+            });
+        }
+
+        return false;
+    }
+</script>
+{% endblock %}

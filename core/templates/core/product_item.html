@@ -1,0 +1,87 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ product.name }}{% endblock %} 
+{% block content %}
+
+<div class=" mx-auto  pt-[30rem] sm:mt-2 sm:pt-[55rem] w-4/5 md:pt-[15rem]  xl:pt-[34rem] 2xl:pt-[50rem] fourq:pt-[68rem] md:flex md:gap-10 md:justify-center">
+    <div class="carousel lg:w-1/2 w-full relative rounded-lg" carousel>
+        {% for image in product.images.all %}
+                <div class="carousel-item  rounded-lg {% if forloop.first %} block {% else %} hidden {% endif %} ">
+                    <img src="{{ image.image.url }}" class="absolute rounded-lg w-full bottom-1 z-[-1]" alt="{{ product.name }}">
+                </div>
+        {% endfor %}
+                <button type="button" class="absolute bottom-[10rem]  xl:bottom-[15rem] md:bottom-[10rem] start-[-0.5rem] z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                        </svg>
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </button>
+                <button type="button" class="absolute bottom-[10rem]  md:bottom-[10rem] xl:bottom-[15rem]  end-[-0.5rem] z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                        </svg>
+                        <span class="sr-only">Next</span>
+                    </span>
+                </button>
+    </div>
+
+    <div class="md:flex  md:w-1/2 md:flex-col">
+        <div class="p-6 bg-white w-full rounded-lg lg:drop-shadow-2xl">
+            <!--Product Name-->
+            <h2 class="text-2xl danfo-bus poppins-semibold uppercase">{{ product.name }}</h2>
+             <!--Product Price-->
+            <p class="text-gray-500 text-sm">Price: ₦{{ product.price }}</p>
+             <!--Product Color(s)-->
+            <!-- <p class="text-gray-500 text-sm">Also comes in: {{ product.colors }}</p> -->
+             <!--Product Size-->
+            <p class="text-gray-500 text-sm">Size: {{ product.size }}</p>
+             <!--Product Code-->
+            <p class="text-gray-500 text-sm">Code: {{ product.product_code }}</p>
+    
+        </div>
+    
+        <a 
+        href="{{ request.path }}?add_to_cart=True"
+        class="bg-white w-full text-black flex poppins-semibold text-sm justify-center my-3 py-2  gap-2 rounded-lg hover:bg-gray-400 focus:bg-gray-200 lg:drop-shadow-2xl"
+        >
+            <span>
+                <i class="fa-solid fa-cart-shopping"></i>
+            </span>
+            Add to cart
+        </a>
+    </div>
+
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const carouselItems = document.querySelectorAll('[carousel] .carousel-item');
+        const prevButton = document.querySelector('[data-carousel-prev]');
+        const nextButton = document.querySelector('[data-carousel-next]');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            carouselItems.forEach((item, i) => {
+                item.classList.toggle('block', i === index);
+                item.classList.toggle('hidden', i !== index);
+            });
+        }
+
+        prevButton.addEventListener('click', () => {
+            currentIndex = (currentIndex === 0) ? carouselItems.length - 1 : currentIndex - 1;
+            showSlide(currentIndex);
+        });
+
+        nextButton.addEventListener('click', () => {
+            currentIndex = (currentIndex === carouselItems.length - 1) ? 0 : currentIndex + 1;
+            showSlide(currentIndex);
+        });
+
+        // Initial display
+        showSlide(currentIndex);
+    });
+</script>
+
+{% endblock content %}

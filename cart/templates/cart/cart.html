@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Cart{% endblock %} 
+{% block content %}
+    <div class="max-w-6xl mx-auto flex flex-wrap items-start py-6 px-6 xl:px-0">
+        {% if cart %}
+            <div class=" text-black products w-full lg:w-3/4">
+                {% for item in cart %}
+                <div class="bg-white product py-4 mb-6 mr-4 flex pr-6 pl-2 rounded-xl">
+                    <a href="#" class="w-1/4">
+                        <img src="{{ item.product_image }}" alt="random-image" class="hover:shadow-lg rounded-xl">
+                    </a>
+
+                    <div class="w-3/4 pl-6 mr-10">
+                        <div class="">
+                            <div class="flex justify-between">
+                                <a href="#" class="text-lg">{{ item.product_name }}</a>
+
+                                <span class="mb-6 pt-1 text-gray-400">₦{{ item.total_price }}</span>
+                            </div>
+                            
+
+                            <hr class="block text-black"/>
+
+                            <div class=" quantity mt-6 flex items-center space-x-4">
+                                <a href="{% url 'cart' %}?item={{item.id}}&operation=sub" class="p-3 bg-gray-100 hover:bg-gray-400">-</a>
+                                <span>{{ item.quantity }}</span>
+                                <a href="{% url 'cart' %}?item={{item.id}}&operation=add" class="p-3 bg-gray-100 hover:bg-gray-400">+</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="summary w-full lg:w-1/4 p-6 bg-gray-100 rounded-xl">
+                <h2 class="uppercase text-lg mb-5">
+                    Summary
+                </h2>
+                <div class="mb-6 flex justify-between">
+                    <span class="font-semibold">Total</span>
+                    <span>₦{{ total_price_of_items }}</span>
+                </div>
+
+                <a href="{% url 'checkout' %}" class="inline-block px-8 py-4 rounded-xl bg-gray-700 hover:bg-gray-400 text-white">Checkout</a>
+            </div>
+        {% else %}
+        <div class="bg-black md:bg-transparent max-w-6xl mx-auto flex flex-wrap justify-center  py-10 md:py-6 px-6 xl:px-0">
+            <img src="{% static 'images/shopping-cart.png' %}" alt="no {{ active_category }} avaliable image" class=" w-full md:w-2/4"/>
+            <div class="text-white w-full md:w-2/4">
+                <h2 class="text-3xl font-semibold text-center md:text-left">Oops 😊</h2>
+                <p class="text-center md:text-left">You don't seem to have anything in your cart</p>
+            </div>
+        </div>
+        
+        {% endif %}
+    
+
+    </div>
+{% endblock %}
